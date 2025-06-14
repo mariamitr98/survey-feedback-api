@@ -1,0 +1,42 @@
+@baseUrl = http://127.0.0.1:8000
+
+### Register Responder
+POST {{baseUrl}}/api/register
+Content-Type: application/json
+
+{
+  "email": "responder@email.com",
+  "password": "123456",
+  "password_confirmation": "123456"
+}
+
+### Login Responder
+# @name login
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "email": "responder@email.com",
+  "password": "123456"
+}
+
+###
+@authToken = {{login.response.body.token}}
+
+### Logout Responder
+GET {{baseUrl}}/api/logout
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Responder Informations
+GET {{baseUrl}}/api/me
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Get active surveys
+GET {{baseUrl}}/api/surveys
+Content-Type: application/json
+
+### Get specific survey with questions.
+GET {{baseUrl}}/api/surveys/2
+Content-Type: application/json
