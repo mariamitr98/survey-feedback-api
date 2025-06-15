@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Survey;
 
 class SurveyController extends Controller
@@ -13,7 +16,12 @@ class SurveyController extends Controller
      */
     public function getActiveSurveys()
     {
-        $activeSurveys = Survey::where('status', 'active')->get();
+        // Retrieve item from cache and if requested item doesn't exist retrieve 
+        // from database and store it to cache
+        $activeSurveys = Cache::remember('active_surveys', 300, function () {
+            return Survey::where('status', 'active')->get();
+        });
+
         return response()->json(compact('activeSurveys'), 200);
     }
 
@@ -31,9 +39,10 @@ class SurveyController extends Controller
      *
      * @var Request: The caller HttpRequest data
      */
-    public function submitAnswers(Request $request, string $id) {
+    public function submitAnswers(Request $request, string $id)
+    {
 
-        try{
+        try {
             $validator = Validator::make($request->all(), [
                 'answers' => 'required|array',
                 'answers.*.question_id' => 'required|distinct',
@@ -56,13 +65,13 @@ class SurveyController extends Controller
             $auth_user_id = auth('api')->user()->id;
 
             // Foreach catch erros if exist
-            $answers =$request->input('answers');
+            $answers = $request->input('answers');
 
-            foreach($answers as $answer) {
+            foreach ($answers as $answer) {
                 // Get survey question by question_id
                 $question = $survey->questions->where('id', $answer['question_id'])->first();
 
-                if(!$question) {
+                if (!$question) {
                     array_push($errors, 'Question with ID ' . $answer['question_id'] . ' not found in survey with ID ' . $id);
                     break;
                 }
@@ -74,14 +83,14 @@ class SurveyController extends Controller
                     'multiple_choice' => is_array($answer['value']),
                     default => false,
                 };
-            
+
                 if (!$valid) {
                     array_push($errors, 'Question ID ' . $question->id . ' unsupported type.');
                 }
             }
 
             // At least one error exist in array terminate with bad request
-            if(!empty($errors)) {
+            if (!empty($errors)) {
                 return response()->json(['errors' => $errors], 400);
             }
 
@@ -89,8 +98,8 @@ class SurveyController extends Controller
                 foreach ($answers as $answer) {
                     //find question to be updated
                     $question = $survey->questions->where('id', $answer['question_id'])->first();
-            
-                    if ($question) { 
+
+                    if ($question) {
                         // create
                         $question->answer->create([
                             'responder_id'  => $auth_user_id,
@@ -101,10 +110,8 @@ class SurveyController extends Controller
             });
 
             return response()->json([], 201);
-        }
-        catch (\Throwable) {
+        } catch (\Throwable) {
             return response()->json(['error' => 'Something went wrong during survey submition.'], 500);
         }
     }
-
 }
