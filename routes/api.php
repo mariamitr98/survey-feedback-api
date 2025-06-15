@@ -26,9 +26,7 @@ Route::post('/login', [JWTAuthController::class, 'login']);
 // JWT Secure Endpoinst
 Route::middleware([JwtMiddleware::class])->group(function () {
     
-    Route::post('/surveys/{id}/submit', function (int $user_id) {
-        return 'submit' . $user_id;
-    });
+    Route::post('/surveys/{id}/submit', [SurveyController::class, 'submitAnswers']);
 
     Route::get('/me',[ResponderController::class, 'getResponderInfo']);
 

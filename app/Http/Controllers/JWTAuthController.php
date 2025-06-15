@@ -60,7 +60,7 @@ class JWTAuthController extends Controller
             $token = JWTAuth::fromUser($user);
 
             return response()->json(compact('token'));
-        } catch (Expectation) {
+        } catch (\Throwable) {
             return response()->json(['error' => 'Could not login'], 500);
         }
     }
