@@ -40,3 +40,93 @@ Content-Type: application/json
 ### Get specific survey with questions.
 GET {{baseUrl}}/api/surveys/2
 Content-Type: application/json
+
+### Submit answers to a survey - created
+POSt {{baseUrl}}/api/surveys/1/submit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "answers": [
+    {
+      "question_id": "1",
+      "value": "string"
+    },
+    {
+      "question_id": "2",
+      "value": [ 1, 4, 6 ]
+    }
+  ]
+}
+
+### Submit answers to a survey - validation errors (duplicate value)
+POSt {{baseUrl}}/api/surveys/1/submit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "answers": [
+    {
+      "question_id": 1,
+      "value": "string"
+    },
+    {
+      "question_id": 1,
+      "value": [ 1, 4, 6 ]
+    }
+  ]
+}
+
+### Submit answers to a survey - survey not exist
+POSt {{baseUrl}}/api/surveys/2/submit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "answers": [
+    {
+      "question_id": 3,
+      "value": "string"
+    },
+    {
+      "question_id": 4,
+      "value": [ 1, 4, 6 ]
+    }
+  ]
+}
+
+### Submit answers to a survey - unsupported type
+POSt {{baseUrl}}/api/surveys/1/submit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "answers": [
+    {
+      "question_id": 1,
+      "value": [ 1, 4, 6 ]
+    },
+    {
+      "question_id": 2,
+      "value": "string"
+    }
+  ]
+}
+
+### Submit answers to a survey - question not found in survey
+POSt {{baseUrl}}/api/surveys/1/submit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "answers": [
+    {
+      "question_id": 3,
+      "value": "string"
+    },
+    {
+      "question_id": 2,
+      "value": [ 1, 4, 6 ]
+    }
+  ]
+}
