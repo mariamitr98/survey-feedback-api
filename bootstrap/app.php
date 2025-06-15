@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     // Global Middleware
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(RateLimiterMiddleware::class);
+        $middleware->prependToGroup('api', RateLimiterMiddleware::class);
     })->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

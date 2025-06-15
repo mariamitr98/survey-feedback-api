@@ -17,7 +17,7 @@ class RateLimiterMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $limiter_key = 'rate_limiter:' . $request->ip();
+        $limiter_key = 'rate_limiter:' . $request->ip() . $request->route()->uri();
 
         if (RateLimiter::tooManyAttempts($limiter_key, $perMinute = 5)) {
             return response()->json(['error' => 'Too many attempts'], 429);
