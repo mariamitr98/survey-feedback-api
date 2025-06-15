@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\RateLimiter;
 class RateLimiterMiddleware
 {
     /**
-     * Handle an incoming request.
+     * Rate limit validation
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */

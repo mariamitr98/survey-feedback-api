@@ -61,12 +61,9 @@ class SurveyController extends Controller
             }
 
             $errors = [];
-
-            $auth_user_id = auth('api')->user()->id;
-
-            // Foreach catch erros if exist
             $answers = $request->input('answers');
 
+            // Foreach catch erros if exist
             foreach ($answers as $answer) {
                 // Get survey question by question_id
                 $question = $survey->questions->where('id', $answer['question_id'])->first();
@@ -85,7 +82,7 @@ class SurveyController extends Controller
                 };
 
                 if (!$valid) {
-                    array_push($errors, 'Question ID ' . $question->id . ' unsupported type.');
+                    array_push($errors, 'Answer for Question ID ' . $question->id . 'unsupported type. Corrected type is :' . $question->type);
                 }
             }
 
@@ -94,15 +91,18 @@ class SurveyController extends Controller
                 return response()->json(['errors' => $errors], 400);
             }
 
-            DB::transaction(function () use ($answers, $survey, $auth_user_id) {
+            $responder_id = auth('api')->user()->id;
+
+            // Create db transaction 
+            DB::transaction(function () use ($answers, $survey, $responder_id) {
                 foreach ($answers as $answer) {
                     //find question to be updated
                     $question = $survey->questions->where('id', $answer['question_id'])->first();
 
                     if ($question) {
-                        // create
+                        // Store the answer into the database
                         $question->answer->create([
-                            'responder_id'  => $auth_user_id,
+                            'responder_id'  => $responder_id,
                             'response_data' => json_encode($answer['value']),
                         ]);
                     }

@@ -13,13 +13,11 @@ class JwtMiddleware
     public function handle($request, Closure $next)
     {
         try {
-            $user = JWTAuth::parseToken()->authenticate();
-            
-            
+            JWTAuth::parseToken()->authenticate();
         } catch (JWTException) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
- 
+
         return $next($request);
     }
 }

@@ -14,7 +14,6 @@ class SurveySeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a survey
         $survey = Survey::create([
             'title' => 'Customer Satisfaction 2025',
             'description' => 'A survey about customers’ experience with our services.',
@@ -33,7 +32,6 @@ class SurveySeeder extends Seeder
             ],
         ]);
 
-        // Second survey with its own questions
         $survey2 = Survey::create([
             'title' => 'Employee Feedback Survey',
             'description' => 'Anonymous survey about the work environment.',
