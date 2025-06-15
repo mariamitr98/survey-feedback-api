@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Survey;
 
+use Illuminate\Support\Facades\Log;
+
 class SurveyController extends Controller
 {
     /**
@@ -82,7 +84,7 @@ class SurveyController extends Controller
                 };
 
                 if (!$valid) {
-                    array_push($errors, 'Answer for Question ID ' . $question->id . 'unsupported type. Corrected type is :' . $question->type);
+                    array_push($errors, 'Answer for Question ID ' . $question->id . ' unsupported type. Corrected type is : ' . $question->type);
                 }
             }
 
@@ -101,7 +103,7 @@ class SurveyController extends Controller
 
                     if ($question) {
                         // Store the answer into the database
-                        $question->answer->create([
+                        $question->answer()->create([
                             'responder_id'  => $responder_id,
                             'response_data' => json_encode($answer['value']),
                         ]);
@@ -109,8 +111,9 @@ class SurveyController extends Controller
                 }
             });
 
-            return response()->json([], 201);
-        } catch (\Throwable) {
+            return response()->json(["Created"], 201);
+        } catch (\Throwable $e) {
+            Log::error($e); 
             return response()->json(['error' => 'Something went wrong during survey submition.'], 500);
         }
     }

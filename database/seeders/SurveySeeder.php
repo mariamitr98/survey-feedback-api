@@ -28,7 +28,7 @@ class SurveySeeder extends Seeder
             ],
             [
                 'type' => 'multiple_choice',
-                'question_text' => 'Would you recommend us to others?',
+                'question_text' => 'What are the reasons you choose our service?',
             ],
         ]);
 
