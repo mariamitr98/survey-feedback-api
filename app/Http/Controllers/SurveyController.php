@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Survey;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SurveyController extends Controller
 {
@@ -43,6 +44,16 @@ class SurveyController extends Controller
      */
     public function submitAnswers(Request $request, string $id)
     {
+        //Log submissions
+        $log_data = [
+            "responder_ip" => $request->ip(),
+            "responder_id" => auth('api')->user()->id,
+            "submited_data" => $request->answers,
+        ];
+
+        $file_path = 'submissions-log/survey_'.$id.'_'.date("Y_m_d_H_i_s").'.json';
+
+        Storage::disk('local')->put($file_path, json_encode($log_data));
 
         try {
             $validator = Validator::make($request->all(), [
