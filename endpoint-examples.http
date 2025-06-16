@@ -1,6 +1,6 @@
 @baseUrl = http://127.0.0.1:8000
 
-### Register Responder
+### Register Responder 1
 POST {{baseUrl}}/api/register
 Content-Type: application/json
 
@@ -10,13 +10,33 @@ Content-Type: application/json
   "password_confirmation": "123456"
 }
 
-### Login Responder
+### Register Responder 2
+POST {{baseUrl}}/api/register
+Content-Type: application/json
+
+{
+  "email": "test@email.com",
+  "password": "123456",
+  "password_confirmation": "123456"
+}
+
+### Login Responder 1
 # @name login
 POST {{baseUrl}}/api/login
 Content-Type: application/json
 
 {
   "email": "responder@email.com",
+  "password": "123456"
+}
+
+### Login Responder 2
+# @name login
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "email": "test@email.com",
   "password": "123456"
 }
 

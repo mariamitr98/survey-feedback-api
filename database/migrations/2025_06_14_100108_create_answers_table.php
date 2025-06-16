@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('responder_id')->constrained();
             $table->json('response_data');
             $table->timestamps();
+
+            $table->unique(['question_id', 'responder_id']);
         });
     }
 
