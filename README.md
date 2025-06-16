@@ -1,66 +1,114 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Survey Feedback Api
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📝 Description
 
-## About Laravel
+A simple backend API built with Laravel 11 and PHP 8.4 for collecting feedback through surveys. Responders can register, log in, and submit answers to surveys using secure JWT authentication.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The API allows anyone to view active surveys and their questions, but only logged-in responders can submit responses.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The system follows RESTful design, includes proper data validation, rate limiting, caching with Redis, and logging.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Installation
 
-## Learning Laravel
+### PHP and Composer
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+If you don't have PHP and Composer installed on your local machine, the following commands will install PHP, Composer, and the Laravel installer:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+#### macOS
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```sh
+/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
+```
 
-## Laravel Sponsors
+#### Windows PowerShell
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```powershell
+# Run as administrator...
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
+```
 
-### Premium Partners
+#### Linux
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```sh
+/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
+```
 
-## Contributing
+## Clone the project from the GitHub repository
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```git
+git clone https://github.com/mariamitr98/survey-feedback-api.git
+```
 
-## Code of Conduct
+## Setting Up Docker and Containers (MySql, Redis)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Install Docker by following the instructions on the official [site](https://docs.docker.com/desktop/). Then run the following commands in order to create the docker containers
 
-## Security Vulnerabilities
+### Redis
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```docker
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+```
 
-## License
+### MySQL
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```docker
+docker run --detach --name mysql-container --env MYSQL_ROOT_PASSWORD=rootpassword --publish 3306:3306 --volume mysql-data:/var/lib/mysql mysql:latest
+```
+
+## Run the application
+
+### Install dependecies
+
+```sh
+composer install
+```
+
+### Decrypt the .env.encrypted file
+
+```sh
+php artisan env:decrypt --key=
+```
+
+### Run migrations and seeders
+
+```sh
+php artisan migrate --seed
+```
+
+### Run
+
+```sh
+php artisan serve
+```
+
+## 🌐 API EndPoints
+
+File <b> routes/api.php </b>
+
+- `/register`: Register responder to app.
+
+- `/login`: Login responder to app.
+
+- `/logout`: Logout responder form the app.
+
+- `/surveys`: Return all active surveys.
+
+- `/surveys/{id}`: Return a given survey.
+
+- `/surveys/{id}/submit`: Submit answer(s) for a given survey.
+
+- `/me`: Returns the responder information.
+
+## 🔧 Testing API Endpoints with REST Client
+
+For testing and verifying the correct functionality of the API endpoints, a file named endpoint-examples.http is included in the project.
+
+This file contains example HTTP requests that can be executed directly within Visual Studio code using the REST Client extension. This extension allows you to send HTTP requests and view responses directly in the editor, making endpoint testing simple and efficient.
+
+### How to use:
+
+1. Install the REST Client extension in Visual Studio Code.
+
+2. Open the endpoint-examples.http file.
+
+3. Select the HTTP request you want to test.
